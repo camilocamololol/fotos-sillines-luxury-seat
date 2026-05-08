@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Luxury Seat - Catálogo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #080808;
+            --card: #111111;
+            --card2: #161616;
+            --border: #252525;
+            --border2: #3a3a3a;
+            --input-bg: #1a1a1a;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--dark);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pantalla {
+            width: 100%;
+            max-width: 480px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px 24px 50px;
+        }
+        .pantalla.activa { display: flex; }
+
+        /* ── CABECERA ── */
+        .cabecera {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 36px;
+        }
+        .cabecera-fila { display: flex; align-items: center; gap: 16px; }
+        .logo-circulo {
+            width: 90px; height: 90px;
+            border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--gold); flex-shrink: 0;
+        }
+        .logo-textos { display: flex; flex-direction: column; gap: 3px; }
+        .logo-texto {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 40px; letter-spacing: 8px;
+            color: var(--gold); line-height: 1;
+        }
+        .logo-texto span { color: white; }
+        .logo-sub { font-size: 8px; font-weight: 400; letter-spacing: 4px; color: #444; text-transform: uppercase; }
+        .linea-deco {
+            width: 100%; height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin-top: 18px;
+        }
+
+        /* ── REDES SOCIALES ── */
+        .redes-sociales {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .btn-red {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            padding: 14px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .btn-red:active { background: #181818; }
+        .btn-red.whatsapp:active { border-color: #25D366; }
+        .btn-red.tiktok:active { border-color: #ff0050; }
+        .btn-red.instagram { opacity: 0.35; cursor: default; }
+
+        .btn-red svg { width: 24px; height: 24px; }
+        .btn-red-nombre {
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #555;
+        }
+        .btn-red.whatsapp .btn-red-nombre { color: #25D366; }
+        .btn-red.tiktok .btn-red-nombre { color: #ff0050; }
+        .btn-red-pronto {
+            font-size: 7px;
+            letter-spacing: 1px;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        /* ── TARJETAS DE MARCA ── */
+        .seccion-marcas { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+
+        .tarjeta-marca {
+            width: 100%; background: var(--card);
+            border: 1px solid var(--border); border-radius: 6px;
+            padding: 20px 24px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; overflow: hidden;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .tarjeta-marca::after {
+            content: ''; position: absolute;
+            left: 0; top: 0; bottom: 0; width: 3px;
+            background: var(--gold); opacity: 0; transition: opacity 0.2s;
+        }
+        .tarjeta-marca:active { background: #181818; border-color: var(--border2); }
+        .tarjeta-marca:active::after { opacity: 1; }
+        .tarjeta-marca.proximamente { opacity: 0.28; cursor: default; }
+
+        .tarjeta-cotizador {
+            width: 100%; background: linear-gradient(135deg, #1a1500, #111);
+            border: 1px solid var(--gold); border-radius: 6px;
+            padding: 20px 24px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: background 0.2s; margin-top: 6px;
+        }
+        .tarjeta-cotizador:active { background: #221d00; }
+
+        .marca-info { display: flex; flex-direction: column; gap: 3px; }
+        .marca-nombre { font-family: 'Bebas Neue', cursive; font-size: 22px; letter-spacing: 5px; color: white; }
+        .marca-desc { font-size: 9px; font-weight: 400; letter-spacing: 2px; color: #444; text-transform: uppercase; }
+        .marca-flecha { color: var(--gold); font-size: 20px; }
+        .badge-pronto { font-size: 8px; letter-spacing: 2px; color: #333; border: 1px solid #2a2a2a; padding: 3px 8px; border-radius: 2px; font-weight: 600; }
+
+        .separador { display: flex; align-items: center; gap: 10px; width: 100%; margin: 2px 0; }
+        .sep-linea { flex: 1; height: 1px; background: var(--border); }
+        .sep-rombo { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); opacity: 0.4; }
+
+        /* ── MODELOS ── */
+        .titulo-pantalla {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 30px; letter-spacing: 7px;
+            color: var(--gold); text-align: center; margin-bottom: 4px;
+        }
+        .subtitulo-pantalla {
+            font-size: 9px; font-weight: 400; letter-spacing: 3px;
+            color: #444; text-transform: uppercase; text-align: center; margin-bottom: 26px;
+        }
+
+        .cuadricula-modelos {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; width: 100%; margin-bottom: 32px;
+        }
+        .caja-modelo {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 6px; overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+        }
+        .caja-modelo:active { border-color: var(--border2); }
+        .miniatura-modelo {
+            width: 100%; height: 145px; object-fit: contain;
+            background: #ffffff; display: block; border-bottom: 1px solid var(--border);
+        }
+        .etiqueta-modelo { padding: 13px 10px 11px; text-align: center; }
+        .etiqueta-nombre { font-family: 'Bebas Neue', cursive; font-size: 16px; letter-spacing: 3px; display: block; margin-bottom: 3px; }
+        .etiqueta-sub { font-size: 8px; font-weight: 400; letter-spacing: 2px; color: #444; text-transform: uppercase; }
+
+        /* ── VISOR 360 ── */
+        .contenedor-visor {
+            width: 100%; position: relative; background: #080808;
+            border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+            touch-action: none; user-select: none; min-height: 290px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #img-visor { width: 100%; display: block; pointer-events: none; transition: opacity 0.1s; }
+        .pista-giro {
+            position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.75); color: var(--gold);
+            font-size: 8px; letter-spacing: 3px; padding: 5px 16px; border-radius: 2px;
+            white-space: nowrap; pointer-events: none; font-weight: 700; border: 1px solid #222;
+        }
+        .galeria {
+            width: 100%; overflow-x: auto; display: flex; gap: 6px;
+            margin-top: 12px; padding-bottom: 4px;
+            scrollbar-width: thin; scrollbar-color: var(--gold) #111;
+        }
+        .galeria::-webkit-scrollbar { height: 3px; }
+        .galeria::-webkit-scrollbar-track { background: #111; }
+        .galeria::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+        .miniatura {
+            flex-shrink: 0; width: 68px; height: 68px;
+            object-fit: cover; border-radius: 4px; border: 1px solid #222;
+            cursor: pointer; opacity: 0.4; transition: opacity 0.2s, border-color 0.2s;
+        }
+        .miniatura.activa { opacity: 1; }
+        .spinner {
+            position: absolute; width: 32px; height: 32px;
+            border: 1px solid #222; border-top-color: var(--gold);
+            border-radius: 50%; animation: girar 0.8s linear infinite; display: none;
+        }
+        @keyframes girar { to { transform: rotate(360deg); } }
+
+        /* ── COTIZADOR ── */
+        .cotizador-card {
+            width: 100%; background: var(--card2);
+            border: 1px solid var(--border); border-radius: 6px;
+            padding: 20px; margin-bottom: 14px;
+        }
+        .cotizador-card h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 18px; letter-spacing: 4px; color: var(--gold);
+            margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        }
+        .campo-grupo { margin-bottom: 14px; }
+        .campo-grupo label {
+            display: block; font-size: 9px; font-weight: 600;
+            letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 7px;
+        }
+        select, input[type="number"] {
+            width: 100%; padding: 12px 14px;
+            border-radius: 4px; border: 1px solid var(--border);
+            background: var(--input-bg); color: white;
+            font-size: 13px; font-family: 'Montserrat', sans-serif;
+            font-weight: 400; appearance: none;
+        }
+        select:focus, input[type="number"]:focus { outline: none; border-color: var(--gold); }
+        input[type="number"]::placeholder { color: #333; }
+        .extras-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .total-flotante {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 48px); max-width: 432px;
+            background: var(--gold); color: #000;
+            padding: 16px 20px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 8px 32px rgba(212,175,55,0.25); z-index: 100;
+        }
+        .total-flotante .total-etiqueta { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; opacity: 0.7; }
+        .total-flotante .total-valor { font-family: 'Bebas Neue', cursive; font-size: 30px; letter-spacing: 2px; }
+
+        /* ── BOTONES ── */
+        .btn-volver {
+            margin-top: 32px; background: none;
+            border: 1px solid var(--border); color: #444;
+            padding: 11px 32px; border-radius: 4px;
+            font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; font-weight: 600;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-volver:active { border-color: var(--gold); color: var(--gold); }
+        .btn-limpiar {
+            width: 100%; background: none;
+            border: 1px solid var(--border); color: #444;
+            padding: 12px; border-radius: 4px;
+            font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+            cursor: pointer; font-weight: 600; margin-top: 4px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-limpiar:active { border-color: #555; color: #777; }
+    </style>
+</head>
+<body>
+
+<!-- ══ PANTALLA: MARCAS ══ -->
+<div id="pantalla-marcas" class="pantalla activa">
+    <div class="cabecera">
+        <div class="cabecera-fila">
+            <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+            <div class="logo-textos">
+                <div class="logo-texto">LUXURY <span>SEAT</span></div>
+                <div class="logo-sub">Asientos de moto personalizados</div>
+            </div>
+        </div>
+        <div class="linea-deco"></div>
+    </div>
+
+    <!-- REDES SOCIALES -->
+    <div class="redes-sociales">
+        <!-- WhatsApp -->
+        <a class="btn-red whatsapp" href="https://wa.me/573133115715" target="_blank">
+            <svg viewBox="0 0 24 24" fill="#25D366">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L0 24l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.373l-.36-.214-3.737.98.998-3.648-.235-.374A9.818 9.818 0 1112 21.818z"/>
+            </svg>
+            <span class="btn-red-nombre">WhatsApp</span>
+        </a>
+
+        <!-- TikTok -->
+        <a class="btn-red tiktok" href="https://www.tiktok.com/@luxury.seat" target="_blank">
+            <svg viewBox="0 0 24 24" fill="#ff0050">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
+            </svg>
+            <span class="btn-red-nombre">TikTok</span>
+        </a>
+
+        <!-- Instagram (próximamente) -->
+        <div class="btn-red instagram">
+            <svg viewBox="0 0 24 24" fill="#888">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+            <span class="btn-red-nombre">Instagram</span>
+            <span class="btn-red-pronto">Próximamente</span>
+        </div>
+    </div>
+
+    <div class="seccion-marcas">
+        <div class="tarjeta-marca" onclick="mostrarModelos()">
+            <div class="marca-info">
+                <span class="marca-nombre">YAMAHA</span>
+                <span class="marca-desc">Ver colección</span>
+            </div>
+            <span class="marca-flecha">→</span>
+        </div>
+        <div class="separador"><div class="sep-linea"></div><div class="sep-rombo"></div><div class="sep-linea"></div></div>
+        <div class="tarjeta-marca proximamente">
+            <div class="marca-info">
+                <span class="marca-nombre">HONDA</span>
+                <span class="marca-desc">Próximamente</span>
+            </div>
+            <span class="badge-pronto">PRONTO</span>
+        </div>
+        <div class="tarjeta-marca proximamente">
+            <div class="marca-info">
+                <span class="marca-nombre">SUZUKI</span>
+                <span class="marca-desc">Próximamente</span>
+            </div>
+            <span class="badge-pronto">PRONTO</span>
+        </div>
+        <div class="separador"><div class="sep-linea"></div><div class="sep-rombo"></div><div class="sep-linea"></div></div>
+        <div class="tarjeta-cotizador" onclick="mostrarPantalla('pantalla-cotizador')">
+            <div class="marca-info">
+                <span class="marca-nombre" style="color:var(--gold);">COTIZADOR</span>
+                <span class="marca-desc" style="color:#888;">Calcula tu inversión</span>
+            </div>
+            <span style="color:var(--gold); font-size:22px;">✦</span>
+        </div>
+    </div>
+</div>
+
+<!-- ══ PANTALLA: MODELOS ══ -->
+<div id="pantalla-modelos" class="pantalla">
+    <div class="cabecera">
+        <div class="cabecera-fila">
+            <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+            <div class="logo-textos">
+                <div class="logo-texto">LUXURY <span>SEAT</span></div>
+                <div class="logo-sub">Asientos de moto personalizados</div>
+            </div>
+        </div>
+        <div class="linea-deco"></div>
+    </div>
+    <p class="titulo-pantalla">YAMAHA</p>
+    <p class="subtitulo-pantalla">Selecciona un modelo</p>
+    <div class="cuadricula-modelos">
+        <div class="caja-modelo" onclick="abrir360('azul')">
+            <img class="miniatura-modelo" src="1.png" alt="MT-15 Edición Azul">
+            <div class="etiqueta-modelo">
+                <span class="etiqueta-nombre" style="color:#4a9eff;">MT-15</span>
+                <span class="etiqueta-sub">Edición Azul</span>
+            </div>
+        </div>
+        <div class="caja-modelo" onclick="abrir360('naranja')">
+            <img class="miniatura-modelo" src="MT - 15 Naranja Editada (1).png" alt="MT-15 Edición Naranja">
+            <div class="etiqueta-modelo">
+                <span class="etiqueta-nombre" style="color:#ff8c00;">MT-15</span>
+                <span class="etiqueta-sub">Edición Naranja</span>
+            </div>
+        </div>
+    </div>
+    <button class="btn-volver" onclick="mostrarPantalla('pantalla-marcas')">← Volver a marcas</button>
+</div>
+
+<!-- ══ PANTALLA: VISOR 360 ══ -->
+<div id="pantalla-360" class="pantalla">
+    <div class="cabecera">
+        <div class="cabecera-fila">
+            <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+            <div class="logo-textos">
+                <div class="logo-texto">LUXURY <span>SEAT</span></div>
+                <div class="logo-sub">Asientos de moto personalizados</div>
+            </div>
+        </div>
+        <div class="linea-deco"></div>
+    </div>
+    <p class="titulo-pantalla" id="nombre-modelo"></p>
+    <p class="subtitulo-pantalla" id="sub-modelo"></p>
+    <div class="contenedor-visor" id="zona-tactil">
+        <div class="spinner" id="spinner"></div>
+        <img id="img-visor" src="" alt="">
+        <div class="pista-giro">↔ GIRA CON EL DEDO ↔</div>
+    </div>
+    <div class="galeria" id="galeria"></div>
+    <button class="btn-volver" onclick="mostrarPantalla('pantalla-modelos')">← Volver a modelos</button>
+</div>
+
+<!-- ══ PANTALLA: COTIZADOR ══ -->
+<div id="pantalla-cotizador" class="pantalla" style="padding-bottom: 120px;">
+    <div class="cabecera">
+        <div class="cabecera-fila">
+            <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+            <div class="logo-textos">
+                <div class="logo-texto">LUXURY <span>SEAT</span></div>
+                <div class="logo-sub">Asientos de moto personalizados</div>
+            </div>
+        </div>
+        <div class="linea-deco"></div>
+    </div>
+    <p class="titulo-pantalla">COTIZADOR</p>
+    <p class="subtitulo-pantalla">Calcula tu inversión personalizada</p>
+
+    <div class="cotizador-card">
+        <h3>Tecnología Confort</h3>
+        <div class="campo-grupo">
+            <label>Hidrogel Confort ($150k c/u)</label>
+            <select id="gel" onchange="calcular()">
+                <option value="0">Ninguno</option>
+                <option value="150000">1 Asiento — $150.000</option>
+                <option value="300000">2 Asientos (Ambos) — $300.000</option>
+            </select>
+        </div>
+        <div class="campo-grupo">
+            <label>Memory Foam Premium ($50k c/u)</label>
+            <select id="foam" onchange="calcular()">
+                <option value="0">Ninguno</option>
+                <option value="50000">1 Asiento — $50.000</option>
+                <option value="100000">2 Asientos (Ambos) — $100.000</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="cotizador-card">
+        <h3>Tipo de Tapizado</h3>
+        <div class="campo-grupo">
+            <label>Selecciona el tipo</label>
+            <select id="forro" onchange="togglePersonalizado()">
+                <option value="0">Ninguno</option>
+                <option value="60000">Original Sencillo — $60.000</option>
+                <option value="90000">Original Complejo — $90.000</option>
+                <option value="personalizado">Diseño Signature (Personalizado)</option>
+            </select>
+        </div>
+        <div id="div-personalizado" style="display:none;">
+            <div class="campo-grupo">
+                <label style="color:var(--gold);">Valor acordado ($80k – $250k)</label>
+                <input type="number" id="precio-forro" placeholder="Escribe el valor" oninput="calcular()">
+            </div>
+        </div>
+    </div>
+
+    <div class="cotizador-card">
+        <h3>Detalles Adicionales</h3>
+        <div class="extras-grid">
+            <div class="campo-grupo">
+                <label>Bordados ($20.000 c/u)</label>
+                <input type="number" id="qty-bordado" placeholder="0" min="0" oninput="calcular()">
+            </div>
+            <div class="campo-grupo">
+                <label>Estampados ($6.000 c/u)</label>
+                <input type="number" id="qty-estampado" placeholder="0" min="0" oninput="calcular()">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-limpiar" onclick="resetCotizador()">Limpiar cotización</button>
+    <button class="btn-volver" onclick="mostrarPantalla('pantalla-marcas')">← Volver al menú</button>
+
+    <div class="total-flotante">
+        <div>
+            <div class="total-etiqueta">Inversión Total</div>
+            <div class="total-valor" id="total-final">$ 0</div>
+        </div>
+        <span style="font-size:28px; opacity:0.3;">✦</span>
+    </div>
+</div>
+
+<script>
+    const baseDatos = {
+        azul: {
+            nombre: 'MT-15 · EDICIÓN AZUL',
+            color: '#4a9eff',
+            fotogramas: ['1.png','2.png','3.png','4.png','6.png','7.png','8.png','9.png']
+        },
+        naranja: {
+            nombre: 'MT-15 · EDICIÓN NARANJA',
+            color: '#ff8c00',
+            fotogramas: [
+                'MT - 15 Naranja Editada (1).png',
+                'MT - 15 Naranja Editada (2).png',
+                'MT - 15 Naranja Editada (3).png',
+                'MT - 15 Naranja Editada (4).png',
+                'MT - 15 Naranja Editada (5).png'
+            ]
+        }
+    };
+
+    let fotogramasActuales = [], indiceActual = 0, inicioX = 0, arrastrando = false;
+    const cache = {};
+
+    function precargarTodo(urls) {
+        urls.forEach(url => { if (!cache[url]) { const img = new Image(); img.src = url; cache[url] = img; } });
+    }
+
+    function mostrarPantalla(id) {
+        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+        document.getElementById(id).classList.add('activa');
+        window.scrollTo(0, 0);
+    }
+
+    function mostrarModelos() {
+        Object.values(baseDatos).forEach(m => precargarTodo(m.fotogramas));
+        mostrarPantalla('pantalla-modelos');
+    }
+
+    function abrir360(modeloId) {
+        const modelo = baseDatos[modeloId];
+        fotogramasActuales = modelo.fotogramas;
+        indiceActual = 0;
+        const titulo = document.getElementById('nombre-modelo');
+        titulo.textContent = modelo.nombre;
+        titulo.style.color = modelo.color;
+        const total = modelo.fotogramas.length;
+        document.getElementById('sub-modelo').textContent = total === 1
+            ? '1 ángulo disponible'
+            : `${total} ángulos · Desliza o toca una foto`;
+        construirGaleria(modelo.color);
+        establecerFotograma(0);
+        mostrarPantalla('pantalla-360');
+    }
+
+    function construirGaleria(color) {
+        const galeria = document.getElementById('galeria');
+        galeria.innerHTML = '';
+        fotogramasActuales.forEach((url, i) => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'miniatura' + (i === 0 ? ' activa' : '');
+            img.id = 'mini-' + i;
+            if (i === 0) img.style.borderColor = color;
+            img.onclick = () => {
+                document.querySelectorAll('.miniatura').forEach(m => { m.classList.remove('activa'); m.style.borderColor = '#222'; });
+                img.classList.add('activa');
+                img.style.borderColor = color;
+                establecerFotograma(i);
+            };
+            galeria.appendChild(img);
+        });
+    }
+
+    function establecerFotograma(indice) {
+        const img = document.getElementById('img-visor');
+        const spinner = document.getElementById('spinner');
+        const url = fotogramasActuales[indice];
+        indiceActual = indice;
+        const mini = document.getElementById('mini-' + indice);
+        if (mini) mini.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        const enCache = cache[url];
+        if (enCache && enCache.complete && enCache.naturalWidth > 0) {
+            img.src = url; img.style.opacity = '1'; spinner.style.display = 'none';
+        } else {
+            img.style.opacity = '0.3'; spinner.style.display = 'block';
+            const cargador = new Image();
+            cargador.onload = () => { img.src = url; img.style.opacity = '1'; spinner.style.display = 'none'; };
+            cargador.src = url;
+        }
+    }
+
+    function cambiarFotograma(dir) {
+        const nuevo = (indiceActual + dir + fotogramasActuales.length) % fotogramasActuales.length;
+        document.querySelectorAll('.miniatura').forEach((m, i) => { m.classList.toggle('activa', i === nuevo); });
+        establecerFotograma(nuevo);
+    }
+
+    const zonaTactil = document.getElementById('zona-tactil');
+    zonaTactil.addEventListener('touchstart', e => { inicioX = e.touches[0].pageX; }, { passive: true });
+    zonaTactil.addEventListener('touchmove', e => {
+        const diff = inicioX - e.touches[0].pageX;
+        if (Math.abs(diff) > 15) { cambiarFotograma(diff > 0 ? 1 : -1); inicioX = e.touches[0].pageX; }
+        e.preventDefault();
+    }, { passive: false });
+    zonaTactil.addEventListener('mousedown', e => { arrastrando = true; inicioX = e.pageX; });
+    document.addEventListener('mouseup', () => { arrastrando = false; });
+    zonaTactil.addEventListener('mousemove', e => {
+        if (!arrastrando) return;
+        const diff = inicioX - e.pageX;
+        if (Math.abs(diff) > 15) { cambiarFotograma(diff > 0 ? 1 : -1); inicioX = e.pageX; }
+    });
+
+    function togglePersonalizado() {
+        const val = document.getElementById('forro').value;
+        document.getElementById('div-personalizado').style.display = val === 'personalizado' ? 'block' : 'none';
+        if (val !== 'personalizado') document.getElementById('precio-forro').value = '';
+        calcular();
+    }
+
+    function calcular() {
+        let total = 0;
+        total += parseInt(document.getElementById('gel').value) || 0;
+        total += parseInt(document.getElementById('foam').value) || 0;
+        const forro = document.getElementById('forro').value;
+        if (forro === 'personalizado') {
+            total += parseInt(document.getElementById('precio-forro').value) || 0;
+        } else {
+            total += parseInt(forro) || 0;
+        }
+        total += (parseInt(document.getElementById('qty-bordado').value) || 0) * 20000;
+        total += (parseInt(document.getElementById('qty-estampado').value) || 0) * 6000;
+        document.getElementById('total-final').textContent = '$ ' + total.toLocaleString('es-CO');
+    }
+
+    function resetCotizador() {
+        document.getElementById('gel').value = 0;
+        document.getElementById('foam').value = 0;
+        document.getElementById('forro').value = 0;
+        document.getElementById('div-personalizado').style.display = 'none';
+        document.getElementById('precio-forro').value = '';
+        document.getElementById('qty-bordado').value = '';
+        document.getElementById('qty-estampado').value = '';
+        document.getElementById('total-final').textContent = '$ 0';
+    }
+</script>
+</body>
+</html>
