@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Luxury Seat · Catálogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --bg-2:#0d0d0d;
+    --card:#121212;
+    --card-2:#161616;
+    --line:#1f1f1f;
+    --line-2:#2a2a2a;
+    --text:#ededed;
+    --dim:#8a8a8a;
+    --mute:#4a4a4a;
+    --orange:#ff5a1f;
+    --red:#e63946;
+    --green:#2bd17e;
+    --pad: clamp(20px, 5vw, 28px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    background:
+      radial-gradient(1200px 600px at 50% -200px, rgba(255,90,31,0.08), transparent 70%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 7px),
+      var(--bg);
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+
+  /* ── Pantallas ── */
+  .pantalla{width:100%;max-width:540px;display:none;flex-direction:column;padding:0 var(--pad) 80px}
+  .pantalla.activa{display:flex}
+  @media (min-width:980px){.pantalla{max-width:1180px}}
+
+  /* ── Top ribbon ── */
+  .ribbon{
+    display:flex;justify-content:space-between;align-items:center;
+    height:32px;font:500 10px/1 'JetBrains Mono',monospace;
+    letter-spacing:.18em;color:var(--dim);
+    border-bottom:1px solid var(--line);
+    margin: 0 calc(-1 * var(--pad)) 0;
+    padding-left:var(--pad);padding-right:var(--pad);
+  }
+  .ribbon .live{display:inline-flex;align-items:center;gap:6px;color:var(--text)}
+  .ribbon .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(43,209,126,0.18);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(43,209,126,0)}}
+
+  /* ── Header común ── */
+  .header{padding:24px 0 18px}
+  .header-row{display:flex;align-items:center;gap:14px}
+  .logo-circulo{
+    width:74px;height:74px;border-radius:50%;
+    object-fit:cover;flex-shrink:0;
+    border:1px solid var(--orange);
+    box-shadow:0 0 0 4px rgba(255,90,31,0.06), inset 0 0 24px rgba(255,90,31,0.05);
+    background:#0a0a0a;
+  }
+  .brand-stack{flex:1;min-width:0}
+  .brand-name{
+    font-family:'Anton',sans-serif;font-weight:400;
+    font-size:clamp(36px, 10vw, 52px);line-height:.92;letter-spacing:.02em;
+    text-transform:uppercase;
+  }
+  .brand-name em{font-style:normal;color:var(--orange)}
+  .brand-tag{font:500 10px/1.2 'JetBrains Mono',monospace;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-top:8px}
+
+  .meta-row{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:18px;
+    border:1px solid var(--line);border-radius:4px;background:var(--card);overflow:hidden;
+  }
+  .meta-cell{padding:11px 13px;border-right:1px solid var(--line)}
+  .meta-cell:last-child{border-right:none}
+  .meta-k{font:500 8px/1 'JetBrains Mono',monospace;letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin-bottom:6px}
+  .meta-v{font:600 12px/1.2 'Inter',sans-serif;color:var(--text);letter-spacing:.04em}
+  .meta-v.acc{color:var(--orange)}
+
+  /* ── Section header ── */
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin:30px 0 12px}
+  .sec-h-l{display:flex;align-items:baseline;gap:10px}
+  .sec-num{font:600 11px/1 'JetBrains Mono',monospace;color:var(--orange);letter-spacing:.18em}
+  .sec-title{font:400 22px/1 'Anton',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+  .sec-counter{font:500 10px/1 'JetBrains Mono',monospace;letter-spacing:.2em;color:var(--mute)}
+
+  /* ── Bracket card ── */
+  .bracket{position:relative;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px}
+  .bracket::before,.bracket::after{
+    content:"";position:absolute;width:12px;height:12px;border:1.5px solid var(--orange);
+  }
+  .bracket::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+  .bracket::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+
+  .taller-grid{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+  .taller-addr{font:600 13px/1.4 'Inter',sans-serif;letter-spacing:.01em}
+  .taller-addr .pin{color:var(--orange);margin-right:4px}
+  .taller-meta{font:500 10px/1.4 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--dim);margin-top:6px;text-transform:uppercase}
+  .map-buttons{display:flex;gap:8px;margin-top:14px}
+  .map-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:11px 8px;border:1px solid var(--line-2);border-radius:4px;background:transparent;
+    color:var(--text);font:500 10px/1 'JetBrains Mono',monospace;
+    letter-spacing:.22em;text-transform:uppercase;transition:all .15s;cursor:pointer;
+  }
+  .map-btn:hover,.map-btn:active{border-color:var(--orange);color:var(--orange);background:rgba(255,90,31,0.04)}
+  .map-btn .arr{font-size:14px;line-height:1}
+
+  /* ── Contact strip ── */
+  .contact{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:14px}
+  .c-btn{
+    padding:14px 12px;border:1px solid var(--line);border-radius:4px;background:var(--card);
+    color:var(--text);display:flex;flex-direction:column;gap:4px;justify-content:center;
+    transition:all .15s;position:relative;overflow:hidden;
+  }
+  .c-btn:hover{border-color:var(--line-2)}
+  .c-btn .lbl{font:500 8px/1 'JetBrains Mono',monospace;letter-spacing:.22em;color:var(--mute);text-transform:uppercase}
+  .c-btn .val{font:600 12px/1 'Inter',sans-serif;letter-spacing:.02em;color:var(--text)}
+  .c-btn.primary{background:var(--orange);border-color:var(--orange);color:#0a0a0a}
+  .c-btn.primary .lbl{color:rgba(0,0,0,0.55)}
+  .c-btn.primary .val{color:#0a0a0a;font-weight:700}
+  .c-btn.primary:hover,.c-btn.primary:active{filter:brightness(1.05)}
+  .c-btn.disabled{opacity:.35;pointer-events:none}
+  .c-btn.disabled .pill{position:absolute;top:6px;right:6px;font:600 7px/1 'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--mute);border:1px solid var(--mute);padding:2px 4px;border-radius:2px}
+
+  /* ── Brand cards ── */
+  .brands{display:flex;flex-direction:column;gap:10px}
+  .brand-card{
+    position:relative;background:var(--card);border:1px solid var(--line);border-radius:6px;
+    padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;
+    cursor:pointer;color:inherit;transition:all .15s;overflow:hidden;
+  }
+  .brand-card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--orange);
+    transform:scaleY(0);transform-origin:top;transition:transform .25s ease;
+  }
+  .brand-card:hover{border-color:var(--line-2);background:var(--card-2)}
+  .brand-card:hover::before,.brand-card:active::before{transform:scaleY(1)}
+  .b-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+  .b-status{font:600 8px/1 'JetBrains Mono',monospace;letter-spacing:.22em;text-transform:uppercase;padding:4px 7px;border-radius:2px;border:1px solid;display:inline-block}
+  .b-status.active{color:var(--orange);border-color:var(--orange)}
+  .b-status.box{color:var(--mute);border-color:var(--mute)}
+  .b-name{font:400 32px/1 'Anton',sans-serif;letter-spacing:.05em;text-transform:uppercase}
+  .b-meta{font:500 10px/1.5 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+  .b-tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .b-tag{font:500 9px/1 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--dim);padding:5px 8px;border:1px solid var(--line-2);border-radius:2px;text-transform:uppercase}
+  .b-arrow{font:400 24px/1 'Inter',sans-serif;color:var(--orange);transition:transform .25s ease}
+  .brand-card:hover .b-arrow{transform:translateX(4px)}
+  .brand-card.dim{opacity:.42;cursor:default;pointer-events:none}
+  .brand-card.dim .b-arrow{color:var(--mute)}
+
+  .divider{display:flex;align-items:center;gap:10px;margin:4px 0}
+  .divider .line{flex:1;height:1px;background:var(--line)}
+  .divider .x{font:500 9px/1 'JetBrains Mono',monospace;color:var(--mute);letter-spacing:.2em}
+
+  /* ── Cotizador entry CTA ── */
+  .quoter{
+    position:relative;margin-top:12px;border:1px solid var(--orange);border-radius:6px;
+    background:linear-gradient(135deg, rgba(255,90,31,0.10), rgba(255,90,31,0.02) 60%);
+    padding:22px;color:inherit;display:block;cursor:pointer;
+    overflow:hidden;transition:all .2s;
+  }
+  .quoter:hover,.quoter:active{background:linear-gradient(135deg, rgba(255,90,31,0.16), rgba(255,90,31,0.04) 60%)}
+  .quoter::before{
+    content:"";position:absolute;top:0;right:0;width:120px;height:120px;
+    background:repeating-linear-gradient(45deg, rgba(255,90,31,0.18) 0 1px, transparent 1px 9px);
+    opacity:.5;pointer-events:none;
+  }
+  .q-row{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+  .q-tag{font:600 10px/1 'JetBrains Mono',monospace;color:var(--orange);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px}
+  .q-title{font:400 30px/1 'Anton',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--text)}
+  .q-sub{font:500 11px/1.4 'Inter',sans-serif;color:var(--dim);margin-top:6px;max-width:32ch}
+  .q-icon{font:300 36px/1 'Inter',sans-serif;color:var(--orange);opacity:.9}
+  .q-steps{display:flex;gap:4px;margin-top:14px;position:relative;z-index:1}
+  .q-step{flex:1;height:2px;background:var(--line-2)}
+  .q-step.on{background:var(--orange)}
+
+  /* ── Modelos grid ── */
+  .titulo-pantalla{font:400 30px/1 'Anton',sans-serif;letter-spacing:.06em;color:var(--orange);text-align:left;margin-bottom:6px;text-transform:uppercase}
+  .subtitulo-pantalla{font:500 10px/1 'JetBrains Mono',monospace;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:22px}
+
+  .cuadricula-modelos{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:24px}
+  @media (min-width:760px){.cuadricula-modelos{grid-template-columns:repeat(3,1fr)}}
+  @media (min-width:980px){.cuadricula-modelos{grid-template-columns:repeat(4,1fr)}}
+  .caja-modelo{
+    position:relative;background:var(--card);border:1px solid var(--line);border-radius:6px;
+    overflow:hidden;cursor:pointer;transition:all .2s;
+  }
+  .caja-modelo::before,.caja-modelo::after{
+    content:"";position:absolute;width:10px;height:10px;border:1.5px solid var(--orange);
+    opacity:0;transition:opacity .2s;
+  }
+  .caja-modelo::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+  .caja-modelo::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+  .caja-modelo:hover,.caja-modelo:active{border-color:var(--line-2)}
+  .caja-modelo:hover::before,.caja-modelo:hover::after{opacity:1}
+  .miniatura-modelo{
+    width:100%;aspect-ratio:1/0.85;object-fit:contain;background:#fafafa;display:block;border-bottom:1px solid var(--line);
+  }
+  .etiqueta-modelo{padding:13px 14px 14px;display:flex;flex-direction:column;gap:4px}
+  .etiqueta-row{display:flex;align-items:center;gap:8px}
+  .etiqueta-num{font:500 8px/1 'JetBrains Mono',monospace;color:var(--mute);letter-spacing:.18em}
+  .etiqueta-nombre{font:400 18px/1 'Anton',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+  .etiqueta-sub{font:500 9px/1.2 'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+
+  /* ── Visor 360 ── */
+  .contenedor-visor{
+    width:100%;position:relative;background:#fff;
+    border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    touch-action:none;user-select:none;min-height:280px;aspect-ratio:1/0.78;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #img-visor{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;transition:opacity .1s}
+  .pista-giro{
+    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+    background:rgba(0,0,0,0.85);color:var(--orange);
+    font:600 9px/1 'JetBrains Mono',monospace;letter-spacing:.24em;
+    padding:7px 14px;border-radius:2px;white-space:nowrap;pointer-events:none;
+    border:1px solid rgba(255,90,31,0.4);text-transform:uppercase;
+  }
+  .pista-giro::before{content:"↔ "}
+  .pista-giro::after{content:" ↔"}
+  .galeria{width:100%;overflow-x:auto;display:flex;gap:6px;margin-top:12px;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:var(--orange) #111}
+  .galeria::-webkit-scrollbar{height:3px}
+  .galeria::-webkit-scrollbar-track{background:#111}
+  .galeria::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
+  .miniatura{flex-shrink:0;width:64px;height:64px;object-fit:cover;border-radius:3px;border:1px solid var(--line);cursor:pointer;opacity:.45;transition:all .2s;background:#fff}
+  .miniatura.activa{opacity:1}
+  .spinner{position:absolute;width:32px;height:32px;border:1px solid var(--line-2);border-top-color:var(--orange);border-radius:50%;animation:girar .8s linear infinite;display:none;z-index:2}
+  @keyframes girar{to{transform:rotate(360deg)}}
+
+  /* Info silla */
+  .info-silla{
+    width:100%;background:var(--card);border:1px solid var(--line);border-radius:6px;
+    padding:18px;margin-top:14px;position:relative;
+  }
+  .info-silla::before,.info-silla::after{
+    content:"";position:absolute;width:12px;height:12px;border:1.5px solid var(--orange);
+  }
+  .info-silla::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+  .info-silla::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+  .info-silla-tag{font:600 9px/1 'JetBrains Mono',monospace;color:var(--orange);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px}
+  .info-silla-titulo{font:400 18px/1.1 'Anton',sans-serif;letter-spacing:.04em;color:var(--text);text-transform:uppercase;margin-bottom:10px}
+  .info-silla-desc{font:400 12px/1.7 'Inter',sans-serif;color:var(--dim);margin-bottom:16px}
+  .btn-whatsapp-silla{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;padding:14px;background:var(--orange);border:none;border-radius:4px;
+    color:#0a0a0a;font:700 10px/1 'JetBrains Mono',monospace;
+    letter-spacing:.22em;text-transform:uppercase;cursor:pointer;
+    transition:filter .15s;
+  }
+  .btn-whatsapp-silla:hover,.btn-whatsapp-silla:active{filter:brightness(1.08)}
+  .btn-whatsapp-silla svg{width:18px;height:18px;flex-shrink:0;fill:#0a0a0a}
+
+  /* ── Cotizador wizard ── */
+  .wizard-frame{
+    width:100%;background:var(--card);border:1px solid var(--line);border-radius:6px;
+    padding:0;overflow:hidden;position:relative;margin-bottom:18px;
+  }
+  .wizard-bar{
+    display:flex;align-items:center;gap:14px;padding:14px 18px;
+    background:var(--bg-2);border-bottom:1px solid var(--line);
+    font:600 10px/1 'JetBrains Mono',monospace;letter-spacing:.22em;color:var(--mute);text-transform:uppercase;
+  }
+  .wizard-bar .step{color:var(--orange)}
+  .wizard-bar .progress{flex:1;display:flex;gap:4px}
+  .wizard-bar .progress i{flex:1;height:3px;background:var(--line-2);border-radius:1px;transition:background .3s}
+  .wizard-bar .progress i.on{background:var(--orange)}
+
+  .wizard-step{padding:24px 22px 22px;display:none;animation:fadeIn .3s ease}
+  .wizard-step.activa{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .wiz-num{font:600 10px/1 'JetBrains Mono',monospace;color:var(--orange);letter-spacing:.22em;margin-bottom:8px;text-transform:uppercase}
+  .wiz-pregunta{font:400 24px/1.1 'Anton',sans-serif;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+  .wiz-ayuda{font:400 12px/1.6 'Inter',sans-serif;color:var(--dim);margin-bottom:18px}
+
+  .opciones{display:flex;flex-direction:column;gap:8px}
+  .opcion{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 16px;background:var(--bg-2);border:1px solid var(--line);border-radius:4px;
+    cursor:pointer;transition:all .15s;
+  }
+  .opcion:hover{border-color:var(--line-2)}
+  .opcion.sel{border-color:var(--orange);background:rgba(255,90,31,0.05)}
+  .opcion.sel .op-check{background:var(--orange);border-color:var(--orange)}
+  .opcion.sel .op-check::after{content:"";width:8px;height:8px;background:#0a0a0a;border-radius:50%;display:block}
+  .op-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .op-nombre{font:600 13px/1.3 'Inter',sans-serif;letter-spacing:.01em}
+  .op-desc{font:500 10px/1.3 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+  .op-precio{font:400 18px/1 'Anton',sans-serif;color:var(--orange);letter-spacing:.04em;flex-shrink:0}
+  .op-check{width:18px;height:18px;border:1.5px solid var(--line-2);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+  .input-wrap{margin-top:14px}
+  .input-label{display:block;font:600 10px/1 'JetBrains Mono',monospace;color:var(--orange);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px}
+  input[type="number"]{
+    width:100%;padding:13px 14px;border-radius:4px;border:1px solid var(--line-2);
+    background:var(--bg-2);color:var(--text);font:600 14px/1 'Inter',sans-serif;letter-spacing:.02em;
+  }
+  input[type="number"]:focus{outline:none;border-color:var(--orange)}
+  input[type="number"]::placeholder{color:var(--mute)}
+  .qty-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .qty-cell{background:var(--bg-2);border:1px solid var(--line);border-radius:4px;padding:14px}
+  .qty-cell .lbl{font:600 9px/1 'JetBrains Mono',monospace;color:var(--mute);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;display:block}
+  .qty-cell .price{font:500 9px/1 'JetBrains Mono',monospace;color:var(--orange);letter-spacing:.18em;display:block;margin-top:4px}
+  .qty-controls{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .qty-btn{width:30px;height:30px;background:var(--card);border:1px solid var(--line-2);color:var(--text);border-radius:3px;cursor:pointer;font:600 16px/1 'Inter',sans-serif;display:flex;align-items:center;justify-content:center;transition:all .15s}
+  .qty-btn:hover{border-color:var(--orange);color:var(--orange)}
+  .qty-input{flex:1;text-align:center;padding:6px 4px;font:400 18px/1 'Anton',sans-serif;letter-spacing:.04em;background:transparent;border:none;color:var(--text);min-width:0}
+  .qty-input:focus{outline:none}
+
+  .wiz-nav{display:flex;gap:10px;margin-top:22px;align-items:center}
+  .btn-wiz{
+    padding:13px 22px;border-radius:4px;font:700 10px/1 'JetBrains Mono',monospace;
+    letter-spacing:.22em;text-transform:uppercase;cursor:pointer;transition:all .15s;
+    display:inline-flex;align-items:center;gap:8px;border:1px solid;
+  }
+  .btn-wiz.prev{background:transparent;border-color:var(--line-2);color:var(--dim)}
+  .btn-wiz.prev:hover{border-color:var(--line-2);color:var(--text)}
+  .btn-wiz.next{background:var(--orange);border-color:var(--orange);color:#0a0a0a;margin-left:auto}
+  .btn-wiz.next:hover{filter:brightness(1.08)}
+  .btn-wiz.skip{background:transparent;border:none;color:var(--mute);font-weight:500}
+  .btn-wiz.skip:hover{color:var(--text)}
+
+  /* Resumen / total */
+  .resumen{display:flex;flex-direction:column;gap:8px}
+  .res-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0;border-bottom:1px solid var(--line);
+  }
+  .res-row:last-child{border-bottom:none}
+  .res-row .k{font:500 11px/1.3 'Inter',sans-serif;color:var(--dim)}
+  .res-row .v{font:600 12px/1 'Inter',sans-serif;color:var(--text)}
+  .res-row.empty .k{color:var(--mute);font-style:italic}
+  .res-row.empty .v{color:var(--mute)}
+
+  .total-flotante{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    width:calc(100% - 36px);max-width:500px;
+    background:var(--orange);color:#0a0a0a;padding:14px 18px;border-radius:4px;
+    display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 8px 32px rgba(255,90,31,0.30);z-index:100;
+  }
+  .total-flotante .lbl{font:700 9px/1 'JetBrains Mono',monospace;letter-spacing:.24em;text-transform:uppercase;opacity:.7}
+  .total-flotante .val{font:400 28px/1 'Anton',sans-serif;letter-spacing:.03em}
+
+  /* Footer / volver */
+  .btn-volver{
+    margin-top:24px;background:transparent;border:1px solid var(--line-2);color:var(--dim);
+    padding:11px 22px;border-radius:4px;font:600 9px/1 'JetBrains Mono',monospace;
+    letter-spacing:.24em;text-transform:uppercase;cursor:pointer;align-self:flex-start;
+    transition:all .15s;
+  }
+  .btn-volver:hover,.btn-volver:active{border-color:var(--orange);color:var(--orange)}
+
+  .foot{margin-top:30px;padding:16px 0;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;
+    font:600 9px/1.5 'JetBrains Mono',monospace;color:var(--mute);letter-spacing:.18em;text-transform:uppercase}
+  .foot .bar{flex:1;margin:0 16px;height:1px;background:repeating-linear-gradient(90deg, var(--mute) 0 4px, transparent 4px 8px)}
+
+  /* Desktop layout home */
+  @media (min-width:980px){
+    body{background:
+      radial-gradient(800px 500px at 80% -200px, rgba(255,90,31,0.06), transparent 70%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 7px),
+      var(--bg);
+    }
+    #pantalla-marcas .home-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:start;margin-top:8px}
+    #pantalla-marcas .home-grid .col-a{position:sticky;top:24px}
+    .brand-name{font-size:84px}
+    .b-name{font-size:42px}
+    .q-title{font-size:36px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ PANTALLA: MARCAS / HOME ══ -->
+<div id="pantalla-marcas" class="pantalla activa">
+
+  <div class="ribbon">
+    <span class="live"><span class="dot"></span>TALLER · OPERANDO</span>
+    <span>SISTEMA · 4.2.0</span>
+    <span>CO/BOG</span>
+  </div>
+
+  <div class="home-grid">
+    <div class="col-a">
+
+      <!-- HEADER -->
+      <section class="header">
+        <div class="header-row">
+          <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+          <div class="brand-stack">
+            <div class="brand-name">LUXURY<br><em>SEAT</em></div>
+            <div class="brand-tag">// Asientos de moto · Hechos a medida</div>
+          </div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-cell">
+            <div class="meta-k">SECTOR</div>
+            <div class="meta-v">Chapinero</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-k">MARCAS</div>
+            <div class="meta-v acc">01 / 03</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-k">MODELOS</div>
+            <div class="meta-v">05 ACT.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TALLER -->
+      <div class="sec-head">
+        <div class="sec-h-l"><span class="sec-num">// 01</span><span class="sec-title">Taller</span></div>
+        <span class="sec-counter">UBICACIÓN</span>
+      </div>
+      <div class="bracket">
+        <div class="taller-grid">
+          <div>
+            <div class="taller-addr"><span class="pin">◉</span>Calle 70 #15-47</div>
+            <div class="taller-meta">Bogotá / Chapinero / CO</div>
+          </div>
+          <div class="taller-meta" style="text-align:right">LUN–SÁB<br>09:00–19:00</div>
+        </div>
+        <div class="map-buttons">
+          <a class="map-btn" href="https://waze.com/ul?q=Calle+70+%2315-47+Bogota+Chapinero&navigate=yes" target="_blank"><span class="arr">↗</span>WAZE</a>
+          <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=Calle+70+%2315-47+Bogota+Chapinero" target="_blank"><span class="arr">↗</span>GOOGLE MAPS</a>
+        </div>
+      </div>
+
+      <!-- CONTACTO -->
+      <div class="sec-head">
+        <div class="sec-h-l"><span class="sec-num">// 02</span><span class="sec-title">Contacto</span></div>
+        <span class="sec-counter">CANALES</span>
+      </div>
+      <div class="contact">
+        <a class="c-btn primary" href="https://wa.me/573133115715" target="_blank">
+          <span class="lbl">WHATSAPP DIRECTO</span>
+          <span class="val">+57 313 311 5715</span>
+        </a>
+        <a class="c-btn" href="https://www.tiktok.com/@luxury.seat" target="_blank">
+          <span class="lbl">TIKTOK</span>
+          <span class="val">@luxury.seat</span>
+        </a>
+        <div class="c-btn disabled">
+          <span class="pill">EN BOX</span>
+          <span class="lbl">INSTAGRAM</span>
+          <span class="val">próx.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-b">
+      <!-- MARCAS -->
+      <div class="sec-head">
+        <div class="sec-h-l"><span class="sec-num">// 03</span><span class="sec-title">Selección de marca</span></div>
+        <span class="sec-counter">01/03 ACT.</span>
+      </div>
+      <div class="brands">
+        <div class="brand-card" onclick="mostrarModelos()">
+          <div>
+            <div class="b-head"><span class="b-status active">● ACTIVO</span></div>
+            <div class="b-name">Yamaha</div>
+            <div class="b-meta">5 modelos · 8 acabados disponibles</div>
+            <div class="b-tags">
+              <span class="b-tag">MT-15</span>
+              <span class="b-tag">R15 V4</span>
+              <span class="b-tag">R15 V2</span>
+              <span class="b-tag">NMAX</span>
+            </div>
+          </div>
+          <span class="b-arrow">→</span>
+        </div>
+        <div class="divider"><div class="line"></div><div class="x">×</div><div class="line"></div></div>
+        <div class="brand-card dim">
+          <div>
+            <div class="b-head"><span class="b-status box">○ EN BOX</span></div>
+            <div class="b-name">Honda</div>
+            <div class="b-meta">Próximamente · catálogo en preparación</div>
+          </div>
+          <span class="b-arrow">→</span>
+        </div>
+        <div class="brand-card dim">
+          <div>
+            <div class="b-head"><span class="b-status box">○ EN BOX</span></div>
+            <div class="b-name">Suzuki</div>
+            <div class="b-meta">Próximamente · catálogo en preparación</div>
+          </div>
+          <span class="b-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- COTIZADOR ENTRY -->
+      <div class="sec-head">
+        <div class="sec-h-l"><span class="sec-num">// 04</span><span class="sec-title">Configurador</span></div>
+        <span class="sec-counter">PASO A PASO</span>
+      </div>
+      <div class="quoter" onclick="mostrarPantalla('pantalla-cotizador')">
+        <div class="q-row">
+          <div>
+            <div class="q-tag">// COTIZADOR</div>
+            <div class="q-title">Calcula tu<br>inversión</div>
+            <div class="q-sub">Configura materiales, tapizado y detalles en 4 pasos guiados.</div>
+          </div>
+          <div class="q-icon">✦</div>
+        </div>
+        <div class="q-steps">
+          <span class="q-step on"></span>
+          <span class="q-step"></span>
+          <span class="q-step"></span>
+          <span class="q-step"></span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <span>LUXURY SEAT · 2026</span>
+        <span class="bar"></span>
+        <span>BOGOTÁ / CO</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANTALLA: MODELOS ══ -->
+<div id="pantalla-modelos" class="pantalla">
+  <div class="ribbon">
+    <span class="live"><span class="dot"></span>YAMAHA · 5 MOD.</span>
+    <span>FRAME 02 / 04</span>
+    <span>CO/BOG</span>
+  </div>
+
+  <div class="header">
+    <div class="header-row">
+      <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+      <div class="brand-stack">
+        <div class="brand-name" style="font-size:clamp(28px,7vw,40px)">YAMAHA</div>
+        <div class="brand-tag">// Selecciona un modelo · 5 disponibles</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <div class="sec-h-l"><span class="sec-num">// 02</span><span class="sec-title">Modelos</span></div>
+    <span class="sec-counter">05 ACTIVOS</span>
+  </div>
+
+  <div class="cuadricula-modelos">
+    <div class="caja-modelo" onclick="abrir360('mt15azul')">
+      <img class="miniatura-modelo" src="1.png" alt="MT-15 Edición Azul">
+      <div class="etiqueta-modelo">
+        <div class="etiqueta-row"><span class="etiqueta-num">01</span><span class="etiqueta-nombre" style="color:#4a9eff;">MT-15</span></div>
+        <span class="etiqueta-sub">Edición Azul</span>
+      </div>
+    </div>
+    <div class="caja-modelo" onclick="abrir360('mt15naranja')">
+      <img class="miniatura-modelo" src="MT - 15 Naranja Editada (1).png" alt="MT-15 Edición Naranja">
+      <div class="etiqueta-modelo">
+        <div class="etiqueta-row"><span class="etiqueta-num">02</span><span class="etiqueta-nombre" style="color:#ff8c00;">MT-15</span></div>
+        <span class="etiqueta-sub">Edición Naranja</span>
+      </div>
+    </div>
+    <div class="caja-modelo" onclick="abrir360('r15dorado')">
+      <img class="miniatura-modelo" src="R15 V4 Dorado y negro editadas (2).png" alt="R15 V4 Dorado y Negro">
+      <div class="etiqueta-modelo">
+        <div class="etiqueta-row"><span class="etiqueta-num">03</span><span class="etiqueta-nombre" style="color:#d4af37;">R15 V4</span></div>
+        <span class="etiqueta-sub">Dorado y Negro</span>
+      </div>
+    </div>
+    <div class="caja-modelo" onclick="abrir360('nmaxnegra')">
+      <img class="miniatura-modelo" src="Nmax Negra editadas (1).png" alt="Nmax Edición Negra">
+      <div class="etiqueta-modelo">
+        <div class="etiqueta-row"><span class="etiqueta-num">04</span><span class="etiqueta-nombre" style="color:#aaaaaa;">NMAX</span></div>
+        <span class="etiqueta-sub">Edición Negra</span>
+      </div>
+    </div>
+    <div class="caja-modelo" onclick="abrir360('r15v2costura')">
+      <img class="miniatura-modelo" src="R15 V2 negra costuras delujo editado (1).png" alt="R15 V2 Costuras de Lujo">
+      <div class="etiqueta-modelo">
+        <div class="etiqueta-row"><span class="etiqueta-num">05</span><span class="etiqueta-nombre">R15 V2</span></div>
+        <span class="etiqueta-sub">Costuras de Lujo</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-volver" onclick="mostrarPantalla('pantalla-marcas')">← Volver a marcas</button>
+</div>
+
+<!-- ══ PANTALLA: VISOR 360 ══ -->
+<div id="pantalla-360" class="pantalla">
+  <div class="ribbon">
+    <span class="live"><span class="dot"></span>VISOR 360°</span>
+    <span id="ribbon-frames">— FRAMES</span>
+    <span>CO/BOG</span>
+  </div>
+
+  <div class="header">
+    <div class="header-row">
+      <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+      <div class="brand-stack">
+        <div class="brand-name" id="nombre-modelo" style="font-size:clamp(26px,6.5vw,36px)"></div>
+        <div class="brand-tag" id="sub-modelo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <div class="sec-h-l"><span class="sec-num">// 03</span><span class="sec-title">Vista 360°</span></div>
+    <span class="sec-counter">DESLIZA / TOCA</span>
+  </div>
+
+  <div class="contenedor-visor" id="zona-tactil">
+    <div class="spinner" id="spinner"></div>
+    <img id="img-visor" src="" alt="">
+    <div class="pista-giro">GIRA CON EL DEDO</div>
+  </div>
+  <div class="galeria" id="galeria"></div>
+
+  <div class="info-silla">
+    <div class="info-silla-tag">// FICHA</div>
+    <div class="info-silla-titulo">¿Te interesa esta silla?</div>
+    <p class="info-silla-desc" id="desc-silla"></p>
+    <a class="btn-whatsapp-silla" id="btn-ws-silla" href="#" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L0 24l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.373l-.36-.214-3.737.98.998-3.648-.235-.374A9.818 9.818 0 1112 21.818z"/></svg>
+      Cotizar por WhatsApp
+    </a>
+  </div>
+
+  <button class="btn-volver" onclick="mostrarPantalla('pantalla-modelos')">← Volver a modelos</button>
+</div>
+
+<!-- ══ PANTALLA: COTIZADOR (WIZARD) ══ -->
+<div id="pantalla-cotizador" class="pantalla" style="padding-bottom:120px">
+  <div class="ribbon">
+    <span class="live"><span class="dot"></span>COTIZADOR · ACTIVO</span>
+    <span id="ribbon-step">PASO 1 / 5</span>
+    <span>CO/BOG</span>
+  </div>
+
+  <div class="header">
+    <div class="header-row">
+      <img class="logo-circulo" src="logo.png" alt="Luxury Seat">
+      <div class="brand-stack">
+        <div class="brand-name" style="font-size:clamp(28px,7vw,40px)">COTIZADOR</div>
+        <div class="brand-tag">// Calcula tu inversión personalizada</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-frame">
+    <div class="wizard-bar">
+      <span class="step" id="wiz-step-label">// PASO 01 / 05</span>
+      <div class="progress" id="wiz-progress">
+        <i class="on"></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+
+    <!-- Paso 1: Hidrogel -->
+    <div class="wizard-step activa" data-step="0">
+      <div class="wiz-num">// 01 · TECNOLOGÍA</div>
+      <div class="wiz-pregunta">¿Quieres hidrogel confort?</div>
+      <p class="wiz-ayuda">El hidrogel disipa la presión y reduce fatiga en trayectos largos. $150.000 por asiento.</p>
+      <div class="opciones" data-key="gel">
+        <div class="opcion sel" data-val="0">
+          <div class="op-info"><span class="op-nombre">Sin hidrogel</span><span class="op-desc">Continuar sin esta opción</span></div>
+          <div class="op-check"></div>
+        </div>
+        <div class="opcion" data-val="150000">
+          <div class="op-info"><span class="op-nombre">1 Asiento</span><span class="op-desc">Piloto o parrillero</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$150.000</span><div class="op-check"></div></div>
+        </div>
+        <div class="opcion" data-val="300000">
+          <div class="op-info"><span class="op-nombre">2 Asientos</span><span class="op-desc">Ambos asientos</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$300.000</span><div class="op-check"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 2: Memory Foam -->
+    <div class="wizard-step" data-step="1">
+      <div class="wiz-num">// 02 · TECNOLOGÍA</div>
+      <div class="wiz-pregunta">¿Memory foam premium?</div>
+      <p class="wiz-ayuda">Espuma con memoria que se adapta a tu peso y postura. $50.000 por asiento.</p>
+      <div class="opciones" data-key="foam">
+        <div class="opcion sel" data-val="0">
+          <div class="op-info"><span class="op-nombre">Sin memory foam</span><span class="op-desc">Continuar sin esta opción</span></div>
+          <div class="op-check"></div>
+        </div>
+        <div class="opcion" data-val="50000">
+          <div class="op-info"><span class="op-nombre">1 Asiento</span><span class="op-desc">Piloto o parrillero</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$50.000</span><div class="op-check"></div></div>
+        </div>
+        <div class="opcion" data-val="100000">
+          <div class="op-info"><span class="op-nombre">2 Asientos</span><span class="op-desc">Ambos asientos</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$100.000</span><div class="op-check"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 3: Tapizado -->
+    <div class="wizard-step" data-step="2">
+      <div class="wiz-num">// 03 · TAPIZADO</div>
+      <div class="wiz-pregunta">¿Qué tipo de tapizado?</div>
+      <p class="wiz-ayuda">Define el acabado base. El diseño signature se cotiza por proyecto entre $80.000 y $250.000.</p>
+      <div class="opciones" data-key="forro">
+        <div class="opcion sel" data-val="0">
+          <div class="op-info"><span class="op-nombre">Sin tapizado</span><span class="op-desc">Continuar sin esta opción</span></div>
+          <div class="op-check"></div>
+        </div>
+        <div class="opcion" data-val="60000">
+          <div class="op-info"><span class="op-nombre">Original Sencillo</span><span class="op-desc">Acabado estándar</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$60.000</span><div class="op-check"></div></div>
+        </div>
+        <div class="opcion" data-val="90000">
+          <div class="op-info"><span class="op-nombre">Original Complejo</span><span class="op-desc">Acabado reforzado</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$90.000</span><div class="op-check"></div></div>
+        </div>
+        <div class="opcion" data-val="personalizado">
+          <div class="op-info"><span class="op-nombre">Diseño Signature</span><span class="op-desc">Personalizado · acordado</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="op-precio">$80–250k</span><div class="op-check"></div></div>
+        </div>
+      </div>
+      <div id="div-personalizado" class="input-wrap" style="display:none">
+        <label class="input-label">Valor acordado (COP)</label>
+        <input type="number" id="precio-forro" placeholder="80.000 – 250.000" oninput="calcular()">
+      </div>
+    </div>
+
+    <!-- Paso 4: Detalles -->
+    <div class="wizard-step" data-step="3">
+      <div class="wiz-num">// 04 · DETALLES</div>
+      <div class="wiz-pregunta">Bordados y estampados</div>
+      <p class="wiz-ayuda">Suma piezas adicionales para personalizar tu silla. Bordado $20.000 c/u · Estampado $6.000 c/u.</p>
+      <div class="qty-row">
+        <div class="qty-cell">
+          <span class="lbl">Bordados</span>
+          <div class="qty-controls">
+            <button class="qty-btn" type="button" onclick="ajustarQty('qty-bordado',-1)">−</button>
+            <input type="number" id="qty-bordado" class="qty-input" placeholder="0" min="0" value="0" oninput="calcular()">
+            <button class="qty-btn" type="button" onclick="ajustarQty('qty-bordado',1)">+</button>
+          </div>
+          <span class="price">$20.000 c/u</span>
+        </div>
+        <div class="qty-cell">
+          <span class="lbl">Estampados</span>
+          <div class="qty-controls">
+            <button class="qty-btn" type="button" onclick="ajustarQty('qty-estampado',-1)">−</button>
+            <input type="number" id="qty-estampado" class="qty-input" placeholder="0" min="0" value="0" oninput="calcular()">
+            <button class="qty-btn" type="button" onclick="ajustarQty('qty-estampado',1)">+</button>
+          </div>
+          <span class="price">$6.000 c/u</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 5: Resumen -->
+    <div class="wizard-step" data-step="4">
+      <div class="wiz-num">// 05 · RESUMEN</div>
+      <div class="wiz-pregunta">Tu cotización</div>
+      <p class="wiz-ayuda">Revisa tu configuración antes de enviarla. Puedes regresar a cualquier paso para ajustar.</p>
+      <div class="resumen" id="resumen"></div>
+      <a id="btn-ws-cotizacion" href="#" target="_blank" class="btn-whatsapp-silla" style="margin-top:18px">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L0 24l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.373l-.36-.214-3.737.98.998-3.648-.235-.374A9.818 9.818 0 1112 21.818z"/></svg>
+        Enviar cotización por WhatsApp
+      </a>
+      <button class="btn-wiz skip" type="button" onclick="resetCotizador()" style="margin-top:10px;width:100%">↺ Limpiar y empezar de nuevo</button>
+    </div>
+
+    <!-- Nav -->
+    <div class="wiz-nav" style="padding:0 22px 22px">
+      <button class="btn-wiz prev" id="btn-prev" onclick="paso(-1)" disabled>← ATRÁS</button>
+      <button class="btn-wiz next" id="btn-next" onclick="paso(1)">SIGUIENTE →</button>
+    </div>
+  </div>
+
+  <button class="btn-volver" onclick="mostrarPantalla('pantalla-marcas')">← Volver al menú</button>
+
+  <div class="total-flotante">
+    <div>
+      <div class="lbl">Inversión Total</div>
+      <div class="val" id="total-final">$ 0</div>
+    </div>
+    <span style="font-size:24px;opacity:.4">✦</span>
+  </div>
+</div>
+
+<script>
+  const WS = '573133115715';
+
+  /* ── BASE DE DATOS (intacta) ── */
+  const baseDatos = {
+    mt15azul: {
+      nombre: 'MT-15 · EDICIÓN AZUL',
+      color: '#4a9eff',
+      descripcion: 'Diseño exclusivo con acabados en azul eléctrico sobre fondo negro. Tapizado de alta resistencia con costuras reforzadas, ideal para el piloto que busca estilo y durabilidad. ¿Te interesa esta silla? Escríbenos y te asesoramos sin compromiso.',
+      fotogramas: ['1.png','2.png','3.png','4.png','6.png','7.png','8.png','9.png']
+    },
+    mt15naranja: {
+      nombre: 'MT-15 · EDICIÓN NARANJA',
+      color: '#ff8c00',
+      descripcion: 'Acabados en naranja intenso con contraste negro mate. Diseño agresivo y deportivo pensado para destacar en cada salida. Tapizado premium con materiales de primera calidad. ¿Te interesa? Contáctanos y te cotizamos.',
+      fotogramas: ['MT - 15 Naranja Editada (1).png','MT - 15 Naranja Editada (2).png','MT - 15 Naranja Editada (3).png','MT - 15 Naranja Editada (4).png','MT - 15 Naranja Editada (5).png']
+    },
+    r15dorado: {
+      nombre: 'R15 V4 · DORADO Y NEGRO',
+      color: '#d4af37',
+      descripcion: 'Combinación de dorado y negro en un diseño elegante y exclusivo para la R15 V4. Acabados premium con detalles metálicos que elevan el look de tu moto al siguiente nivel. ¿Te la imaginas en tu moto? Escríbenos ahora.',
+      fotogramas: ['R15 V4 Dorado y negro editadas (2).png','R15 V4 Dorado y negro editadas (3).png','R15 V4 Dorado y negro editadas (4).png','R15 V4 Dorado y negro editadas (5).png','R15 V4 Dorado y negro editadas (6).png']
+    },
+    nmaxnegra: {
+      nombre: 'NMAX · EDICIÓN NEGRA',
+      color: '#aaaaaa',
+      descripcion: 'Diseño elegante en negro total para la Yamaha Nmax. Tapizado de alta resistencia con acabados impecables que combinan a la perfección con la línea urbana de esta moto. ¿Te interesa? Contáctanos y te cotizamos.',
+      fotogramas: ['Nmax Negra editadas (1).png','Nmax Negra editadas (2).png','Nmax Negra editadas (3).png','Nmax Negra editadas (4).png','Nmax Negra editadas (5).png']
+    },
+    r15v2costura: {
+      nombre: 'R15 V2 · COSTURAS DE LUJO',
+      color: '#ffffff',
+      descripcion: 'Negro puro con costuras de lujo que marcan cada detalle de este diseño exclusivo para la R15 V2. Un trabajo artesanal que combina elegancia y precisión en cada puntada. ¿La quieres en tu moto? Escríbenos.',
+      fotogramas: ['R15 V2 negra costuras delujo editado (1).png','R15 V2 negra costuras delujo editado (2).png','R15 V2 negra costuras delujo editado (3).png','R15 V2 negra costuras delujo editado (4).png','R15 V2 negra costuras delujo editado (5).png']
+    }
+  };
+
+  let fotogramasActuales = [], indiceActual = 0, inicioX = 0, arrastrando = false;
+  const cache = {};
+
+  function precargarTodo(urls){ urls.forEach(url => { if(!cache[url]){ const img = new Image(); img.src = url; cache[url] = img; }}); }
+
+  function mostrarPantalla(id){
+    document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+    document.getElementById(id).classList.add('activa');
+    window.scrollTo(0,0);
+  }
+
+  function mostrarModelos(){
+    Object.values(baseDatos).forEach(m => precargarTodo(m.fotogramas));
+    mostrarPantalla('pantalla-modelos');
+  }
+
+  function abrir360(modeloId){
+    const modelo = baseDatos[modeloId];
+    fotogramasActuales = modelo.fotogramas;
+    indiceActual = 0;
+
+    const titulo = document.getElementById('nombre-modelo');
+    titulo.textContent = modelo.nombre;
+    titulo.style.color = modelo.color;
+    const total = modelo.fotogramas.length;
+    document.getElementById('sub-modelo').textContent = total === 1 ? '// 1 ángulo disponible' : `// ${total} ángulos · Desliza o toca`;
+    document.getElementById('ribbon-frames').textContent = `${total} FRAMES`;
+
+    document.getElementById('desc-silla').textContent = modelo.descripcion;
+    const msg = encodeURIComponent(`Hola! Me interesa cotizar esta silla: ${modelo.nombre} 🏍️`);
+    document.getElementById('btn-ws-silla').href = `https://wa.me/${WS}?text=${msg}`;
+
+    construirGaleria(modelo.color);
+    establecerFotograma(0);
+    mostrarPantalla('pantalla-360');
+  }
+
+  function construirGaleria(color){
+    const galeria = document.getElementById('galeria');
+    galeria.innerHTML = '';
+    fotogramasActuales.forEach((url,i) => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'miniatura' + (i === 0 ? ' activa' : '');
+      img.id = 'mini-' + i;
+      if(i === 0) img.style.borderColor = color;
+      img.onclick = () => {
+        document.querySelectorAll('.miniatura').forEach(m => { m.classList.remove('activa'); m.style.borderColor = 'var(--line)'; });
+        img.classList.add('activa');
+        img.style.borderColor = color;
+        establecerFotograma(i);
+      };
+      galeria.appendChild(img);
+    });
+  }
+
+  function establecerFotograma(indice){
+    const img = document.getElementById('img-visor');
+    const spinner = document.getElementById('spinner');
+    const url = fotogramasActuales[indice];
+    indiceActual = indice;
+    const mini = document.getElementById('mini-' + indice);
+    if(mini) mini.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    const enCache = cache[url];
+    if(enCache && enCache.complete && enCache.naturalWidth > 0){
+      img.src = url; img.style.opacity = '1'; spinner.style.display = 'none';
+    } else {
+      img.style.opacity = '0.3'; spinner.style.display = 'block';
+      const cargador = new Image();
+      cargador.onload = () => { img.src = url; img.style.opacity = '1'; spinner.style.display = 'none'; };
+      cargador.src = url;
+    }
+  }
+
+  function cambiarFotograma(dir){
+    const nuevo = (indiceActual + dir + fotogramasActuales.length) % fotogramasActuales.length;
+    document.querySelectorAll('.miniatura').forEach((m,i) => { m.classList.toggle('activa', i === nuevo); });
+    establecerFotograma(nuevo);
+  }
+
+  const zonaTactil = document.getElementById('zona-tactil');
+  zonaTactil.addEventListener('touchstart', e => { inicioX = e.touches[0].pageX; }, {passive:true});
+  zonaTactil.addEventListener('touchmove', e => {
+    const diff = inicioX - e.touches[0].pageX;
+    if(Math.abs(diff) > 15){ cambiarFotograma(diff > 0 ? 1 : -1); inicioX = e.touches[0].pageX; }
+    e.preventDefault();
+  }, {passive:false});
+  zonaTactil.addEventListener('mousedown', e => { arrastrando = true; inicioX = e.pageX; });
+  document.addEventListener('mouseup', () => { arrastrando = false; });
+  zonaTactil.addEventListener('mousemove', e => {
+    if(!arrastrando) return;
+    const diff = inicioX - e.pageX;
+    if(Math.abs(diff) > 15){ cambiarFotograma(diff > 0 ? 1 : -1); inicioX = e.pageX; }
+  });
+
+  /* ── COTIZADOR (Wizard) ── */
+  const TOTAL_PASOS = 5;
+  let pasoActual = 0;
+  const sel = { gel:'0', foam:'0', forro:'0' };
+
+  // Click handlers para opciones
+  document.querySelectorAll('.opciones').forEach(grupo => {
+    const key = grupo.dataset.key;
+    grupo.querySelectorAll('.opcion').forEach(op => {
+      op.addEventListener('click', () => {
+        grupo.querySelectorAll('.opcion').forEach(o => o.classList.remove('sel'));
+        op.classList.add('sel');
+        sel[key] = op.dataset.val;
+        if(key === 'forro'){
+          const div = document.getElementById('div-personalizado');
+          if(op.dataset.val === 'personalizado'){ div.style.display = 'block'; }
+          else { div.style.display = 'none'; document.getElementById('precio-forro').value = ''; }
+        }
+        calcular();
+      });
+    });
+  });
+
+  function ajustarQty(id, dir){
+    const inp = document.getElementById(id);
+    const v = Math.max(0, (parseInt(inp.value) || 0) + dir);
+    inp.value = v;
+    calcular();
+  }
+
+  function paso(dir){
+    const nuevo = pasoActual + dir;
+    if(nuevo < 0 || nuevo >= TOTAL_PASOS) return;
+    pasoActual = nuevo;
+    actualizarWizard();
+    if(pasoActual === TOTAL_PASOS - 1) renderResumen();
+  }
+
+  function actualizarWizard(){
+    document.querySelectorAll('.wizard-step').forEach((s,i) => s.classList.toggle('activa', i === pasoActual));
+    document.getElementById('btn-prev').disabled = pasoActual === 0;
+    const nxt = document.getElementById('btn-next');
+    nxt.style.display = pasoActual === TOTAL_PASOS - 1 ? 'none' : 'inline-flex';
+    document.getElementById('btn-prev').style.display = pasoActual === TOTAL_PASOS - 1 ? 'none' : 'inline-flex';
+    document.getElementById('wiz-step-label').textContent = `// PASO 0${pasoActual+1} / 0${TOTAL_PASOS}`;
+    document.getElementById('ribbon-step').textContent = `PASO ${pasoActual+1} / ${TOTAL_PASOS}`;
+    const bars = document.querySelectorAll('#wiz-progress i');
+    bars.forEach((b,i) => b.classList.toggle('on', i <= pasoActual));
+  }
+
+  function calcular(){
+    let total = 0;
+    total += parseInt(sel.gel) || 0;
+    total += parseInt(sel.foam) || 0;
+    if(sel.forro === 'personalizado'){
+      total += parseInt(document.getElementById('precio-forro').value) || 0;
+    } else {
+      total += parseInt(sel.forro) || 0;
+    }
+    total += (parseInt(document.getElementById('qty-bordado').value) || 0) * 20000;
+    total += (parseInt(document.getElementById('qty-estampado').value) || 0) * 6000;
+    document.getElementById('total-final').textContent = '$ ' + total.toLocaleString('es-CO');
+    return total;
+  }
+
+  function lineaResumen(label, valor, monto){
+    const empty = !monto || monto === 0;
+    return `<div class="res-row ${empty?'empty':''}"><span class="k">${label}${valor?' · '+valor:''}</span><span class="v">${empty?'—':'$ '+monto.toLocaleString('es-CO')}</span></div>`;
+  }
+
+  function renderResumen(){
+    const total = calcular();
+    let html = '';
+    html += lineaResumen('Hidrogel Confort', sel.gel === '150000' ? '1 asiento' : sel.gel === '300000' ? '2 asientos' : '', parseInt(sel.gel)||0);
+    html += lineaResumen('Memory Foam', sel.foam === '50000' ? '1 asiento' : sel.foam === '100000' ? '2 asientos' : '', parseInt(sel.foam)||0);
+    let forroLabel = 'Tapizado', forroVal = '', forroMonto = 0;
+    if(sel.forro === '60000'){ forroVal = 'Original Sencillo'; forroMonto = 60000; }
+    else if(sel.forro === '90000'){ forroVal = 'Original Complejo'; forroMonto = 90000; }
+    else if(sel.forro === 'personalizado'){ forroVal = 'Diseño Signature'; forroMonto = parseInt(document.getElementById('precio-forro').value)||0; }
+    html += lineaResumen(forroLabel, forroVal, forroMonto);
+    const qB = parseInt(document.getElementById('qty-bordado').value)||0;
+    const qE = parseInt(document.getElementById('qty-estampado').value)||0;
+    html += lineaResumen('Bordados', qB ? `${qB} pieza${qB>1?'s':''}` : '', qB*20000);
+    html += lineaResumen('Estampados', qE ? `${qE} pieza${qE>1?'s':''}` : '', qE*6000);
+    html += `<div class="res-row" style="margin-top:8px;border-top:1px solid var(--orange);padding-top:14px"><span class="k" style="color:var(--orange);font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:11px;font-family:'JetBrains Mono',monospace">TOTAL</span><span class="v" style="color:var(--orange);font-family:'Anton',sans-serif;font-size:22px;font-weight:400">$ ${total.toLocaleString('es-CO')}</span></div>`;
+    document.getElementById('resumen').innerHTML = html;
+
+    // Mensaje WhatsApp
+    const partes = ['Hola! Quiero cotizar mi silla con esta configuración:'];
+    if(sel.gel !== '0') partes.push(`• Hidrogel ${sel.gel === '150000' ? '(1 asiento)' : '(2 asientos)'}`);
+    if(sel.foam !== '0') partes.push(`• Memory Foam ${sel.foam === '50000' ? '(1 asiento)' : '(2 asientos)'}`);
+    if(forroVal) partes.push(`• Tapizado: ${forroVal}`);
+    if(qB) partes.push(`• ${qB} bordado${qB>1?'s':''}`);
+    if(qE) partes.push(`• ${qE} estampado${qE>1?'s':''}`);
+    partes.push(`Total estimado: $${total.toLocaleString('es-CO')}`);
+    document.getElementById('btn-ws-cotizacion').href = `https://wa.me/${WS}?text=${encodeURIComponent(partes.join('\n'))}`;
+  }
+
+  function resetCotizador(){
+    sel.gel = '0'; sel.foam = '0'; sel.forro = '0';
+    document.querySelectorAll('.opciones').forEach(grupo => {
+      grupo.querySelectorAll('.opcion').forEach(o => o.classList.remove('sel'));
+      const z = grupo.querySelector('.opcion[data-val="0"]');
+      if(z) z.classList.add('sel');
+    });
+    document.getElementById('div-personalizado').style.display = 'none';
+    document.getElementById('precio-forro').value = '';
+    document.getElementById('qty-bordado').value = 0;
+    document.getElementById('qty-estampado').value = 0;
+    pasoActual = 0;
+    actualizarWizard();
+    calcular();
+  }
+
+  // Init
+  actualizarWizard();
+  calcular();
+</script>
+</body>
+</html>
